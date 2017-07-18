@@ -1,0 +1,59 @@
+{% set major_minor = "2.50.3" %}
+{% set version = major_minor + ".4" %}
+{% set sha256 = "0211c118b86aec228d2b7d2606bba9637d5bb5d60694cc7ccb6d2920f02866bc" %}
+
+package:
+  name: glib-openssl
+  version: {{ version }}
+
+source:
+  fn: glib-openssl-2.50.3.tar.xz
+  url: http://ftp.acc.umu.se/pub/gnome/sources/glib-openssl/2.50/glib-openssl-2.50.3.tar.xz
+  sha256: {{ sha256 }}
+  patches:
+    # Related to this patch https://bugzilla.gnome.org/show_bug.cgi?id=673135
+    # However, it was rejected by upstream. Homebrew decided to keep their own
+    # copy ( https://raw.githubusercontent.com/Homebrew/patches/59e4d32/glib/hardcoded-paths.diff ).
+    # We are essentially using that copy, but with some tweaks. Info at the link below.
+    #
+    # https://github.com/Homebrew/legacy-homebrew/blob/21ce7a56cb3fc40fe93d731cc654c69268796772/Library/Formula/glib.rb#L33-L39
+    #
+    #- hardcoded-paths.patch
+
+build:
+  number: 3
+  detect_binary_files_with_prefix: true
+
+requirements:
+  build:
+    - python
+    - pkg-config
+    - libffi >=3.0.0
+    - gettext
+    - zlib 1.2.*
+    - pcre
+    - libiconv
+  run:
+    - libffi >=3.0.0
+    - gettext
+    - zlib 1.2.*
+    - pcre
+    - libiconv
+
+test:
+  commands:
+    #- test -f ${PREFIX}/lib/libglib-2.0.so  # [linux]
+    #- conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
+
+about:
+  home: https://developer.gnome.org/glib/
+  license: LGPL-2.1
+  summary: 'Provides core application building blocks for libraries and applications written in C.'
+
+extra:
+  recipe-maintainers:
+    - ccordoba12
+    - jakirkham
+    - scopatz
+    - ocefpaf
+    - pkgw
